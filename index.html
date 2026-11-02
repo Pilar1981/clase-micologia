@@ -1,0 +1,673 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Micología clínica · clase interactiva</title>
+<script data-goatcounter="https://micologia-unt.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<style>
+:root{
+  --bg:#faf7ff; --card:#ffffff; --ink:#1e1038; --mute:#5b4e7a; --line:#ddd3f5;
+  --v:#6d28d9; --v-d:#4c1d95; --v-soft:#ede9fe; --on-v:#ffffff;
+  --c:#d9402b; --c-bg:#ff6b57; --c-soft:#ffe6e1; --on-c:#2a0b06;
+  --shadow:0 6px 24px rgba(76,29,149,.10);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#140b2b; --card:#201445; --ink:#f4eeff; --mute:#bdb0de; --line:#3a2a6b;
+    --v:#a78bfa; --v-d:#c4b5fd; --v-soft:#2e1f5e; --on-v:#1a0d3d;
+    --c:#ff8f7d; --c-bg:#ff8f7d; --c-soft:#4a1f2a; --on-c:#2a0b06;
+    --shadow:0 6px 24px rgba(0,0,0,.35); color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#140b2b; --card:#201445; --ink:#f4eeff; --mute:#bdb0de; --line:#3a2a6b;
+  --v:#a78bfa; --v-d:#c4b5fd; --v-soft:#2e1f5e; --on-v:#1a0d3d;
+  --c:#ff8f7d; --c-bg:#ff8f7d; --c-soft:#4a1f2a; --on-c:#2a0b06;
+  --shadow:0 6px 24px rgba(0,0,0,.35); color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{font-size:112.5%;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.45}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.app{max-width:560px;margin:0 auto;min-height:calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));display:flex;flex-direction:column}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding:10px max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px))}
+.bar{height:10px;border-radius:99px;background:var(--v-soft);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--v),var(--c-bg));border-radius:99px;transition:width .4s ease}
+.meta{display:flex;justify-content:space-between;font-size:.78rem;color:var(--mute);margin-top:6px;font-weight:600;letter-spacing:.02em}
+main,#panel{flex:1;padding:8px max(16px,env(safe-area-inset-right,0px)) 24px max(16px,env(safe-area-inset-left,0px))}
+.pbtn{border:2px solid var(--v);background:transparent;color:var(--v-d);border-radius:99px;padding:2px 12px;font-weight:800;font-size:.78rem;cursor:pointer}
+.funnel{display:grid;gap:6px;margin:0 0 14px}
+.fr{display:grid;grid-template-columns:7.2rem 1fr 2.2rem;gap:8px;align-items:center;font-size:.82rem}
+.fr .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--mute);font-weight:600}
+.fr .tr{height:12px;border-radius:99px;background:var(--v-soft);overflow:hidden}
+.fr .tr i{display:block;height:100%;background:var(--v);border-radius:99px}
+.fr .tr i.c{background:var(--c-bg)}
+.fr b{text-align:right;font-variant-numeric:tabular-nums}
+.stat b{font-variant-numeric:tabular-nums}
+.scene{animation:in .3s ease}
+@keyframes in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.scene{animation:none}.bar i{transition:none}*{scroll-behavior:auto!important}}
+.eyebrow{margin:6px 0 4px;font-size:.78rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--c)}
+h1{margin:0 0 8px;font-size:1.7rem;line-height:1.15;color:var(--v-d);font-weight:800}
+.lead{margin:0 0 16px;font-size:1.05rem;color:var(--ink)}
+.card{background:var(--card);border:1.5px solid var(--line);border-radius:20px;padding:16px;box-shadow:var(--shadow);margin:0 0 14px}
+.card.big{font-size:1.25rem;font-weight:700;text-align:center;padding:26px 16px}
+.small{font-size:.85rem;color:var(--mute)}
+.count{font-size:.8rem;font-weight:700;color:var(--mute);margin-bottom:8px}
+.opts{display:grid;gap:10px;margin:0 0 12px}
+.opts.row{grid-template-columns:1fr 1fr}
+.opts.row3{grid-template-columns:1fr}
+button{font:inherit;color:inherit}
+.opt{min-height:56px;padding:12px 14px;border-radius:16px;border:2px solid var(--line);background:var(--card);text-align:left;font-weight:600;cursor:pointer;display:flex;gap:10px;align-items:flex-start;width:100%}
+.opt .ltr{flex:none;width:28px;height:28px;border-radius:50%;background:var(--v-soft);color:var(--v-d);display:grid;place-items:center;font-weight:800;font-size:.9rem}
+.opt:active{transform:scale(.99)}
+.opt[aria-pressed="true"]{border-color:var(--v);background:var(--v-soft)}
+.opt.good{border-color:var(--v);background:var(--v-soft)}
+.opt.good::after{content:"✓";margin-left:auto;color:var(--v-d);font-weight:900}
+.opt.bad{border-color:var(--c);background:var(--c-soft)}
+.opt.bad::after{content:"✗";margin-left:auto;color:var(--c);font-weight:900}
+.opt.miss{border-style:dashed;border-color:var(--v)}
+.opt:disabled{cursor:default;opacity:1}
+.centerbtn{text-align:center;justify-content:center}
+.btn{min-height:54px;padding:12px 20px;border-radius:16px;border:0;background:var(--v);color:var(--on-v);font-weight:800;font-size:1.05rem;cursor:pointer;width:100%}
+.btn.coral{background:var(--c-bg);color:var(--on-c)}
+.btn.ghost{background:transparent;color:var(--v-d);border:2px solid var(--v)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.fb{border-radius:16px;padding:12px 14px;margin:0 0 12px;font-size:.98rem;border:2px solid var(--line);background:var(--card)}
+.fb.good{border-color:var(--v);background:var(--v-soft)}
+.fb.bad{border-color:var(--c);background:var(--c-soft)}
+.fb b{display:block;margin-bottom:2px}
+.fb.good b{color:var(--v-d)} .fb.bad b{color:var(--c)}
+.pill{display:inline-block;padding:3px 10px;border-radius:99px;background:var(--v-soft);color:var(--v-d);font-weight:700;font-size:.8rem}
+.pill.c{background:var(--c-soft);color:var(--c)}
+footer.nav{position:sticky;bottom:0;background:var(--bg);border-top:1px solid var(--line);padding:8px max(16px,env(safe-area-inset-right,0px)) max(14px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+footer.nav .btn{box-shadow:var(--shadow)}
+.hint{text-align:center;font-size:.8rem;color:var(--mute);margin:0 0 6px;min-height:1.1em}
+/* sliders */
+.val{font-size:2.4rem;font-weight:900;color:var(--v-d);text-align:center;line-height:1.1}
+.val small{font-size:1rem;color:var(--mute);font-weight:600}
+input[type=range]{width:100%;height:44px;accent-color:var(--v);margin:6px 0}
+.track{position:relative;height:14px;border-radius:99px;background:var(--v-soft);margin:34px 6px 38px}
+.mark{position:absolute;top:-6px;width:4px;height:26px;border-radius:3px;transform:translateX(-50%)}
+.mark span{position:absolute;white-space:nowrap;font-size:.78rem;font-weight:800;left:50%;transform:translateX(-50%)}
+.mark.me{background:var(--c-bg)} .mark.me span{top:-22px;color:var(--c)}
+.mark.real{background:var(--v)} .mark.real span{top:30px;color:var(--v-d)}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 12px}
+.stat{background:var(--v-soft);border-radius:16px;padding:12px;text-align:center}
+.stat b{display:block;font-size:1.5rem;color:var(--v-d)}
+.stat span{font-size:.8rem;color:var(--mute)}
+/* chart */
+.chart{display:flex;gap:18px;align-items:flex-end;justify-content:center;height:230px;padding:0 6px;border-bottom:2px solid var(--line);margin:0 0 8px}
+.col{flex:1;max-width:150px;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center}
+.col .num{font-weight:900;font-size:1.3rem;margin-bottom:4px}
+.col .b{width:100%;border-radius:12px 12px 0 0;transition:height .5s ease,opacity .3s}
+.col.early .b{background:var(--v)} .col.early .num{color:var(--v-d)}
+.col.late .b{background:var(--c-bg)} .col.late .num{color:var(--c)}
+.col.dim{opacity:.35}
+.labels{display:flex;gap:18px;justify-content:center;padding:0 6px;margin:0 0 14px}
+.labels div{flex:1;max-width:150px;text-align:center;font-size:.82rem;font-weight:700;color:var(--mute)}
+/* order */
+.ord{list-style:none;margin:0 0 12px;padding:0;display:grid;gap:8px}
+.ord li{display:flex;align-items:center;gap:8px;background:var(--card);border:2px solid var(--line);border-radius:16px;padding:8px 8px 8px 14px;min-height:56px;font-weight:700}
+.ord li .nm{flex:1}
+.mv{width:44px;height:44px;border-radius:12px;border:2px solid var(--line);background:var(--v-soft);color:var(--v-d);font-weight:900;font-size:1.1rem;cursor:pointer}
+.rk{height:10px;border-radius:99px;background:var(--v);margin-top:6px}
+.res li{display:block}
+.res .top{display:flex;justify-content:space-between;gap:8px}
+.res li.ok{border-color:var(--v)} .res li.no{border-color:var(--c)}
+details{margin:0 0 14px}
+summary{cursor:pointer;font-weight:700;color:var(--v-d);padding:8px 0}
+.case-card{font-size:.98rem}
+.case-card ul{margin:6px 0 0;padding-left:1.1rem}
+.dots{display:flex;gap:6px;margin:0 0 12px}
+.dots i{flex:1;height:6px;border-radius:9px;background:var(--line)}
+.dots i.on{background:var(--v)} .dots i.bad{background:var(--c-bg)}
+/* recorrido */
+.score{font-size:3.4rem;font-weight:900;text-align:center;color:var(--v-d);line-height:1}
+.path{list-style:none;margin:0 0 14px;padding:0 0 0 6px;position:relative}
+.path li{position:relative;padding:8px 0 8px 30px;border-left:3px solid var(--line);margin-left:8px}
+.path li::before{content:"";position:absolute;left:-10px;top:12px;width:17px;height:17px;border-radius:50%;background:var(--v);border:3px solid var(--bg)}
+.path li.rev::before{background:var(--c-bg)}
+.path li.info::before{background:var(--line)}
+.path b{display:block}
+.path span{font-size:.88rem;color:var(--mute)}
+.rev-item{border-left:5px solid var(--c-bg);padding-left:12px;margin:0 0 12px}
+a{color:var(--v-d)}
+.sr{position:absolute;left:-9999px}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="bar" role="progressbar" aria-label="Progreso de la clase" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i></i></div>
+    <div class="meta"><span id="metaL">Micología clínica</span><span><button class="pbtn" id="pb" hidden>Panel docente</button> <span id="metaR">1 / 13</span></span></div>
+  </header>
+  <main id="main" tabindex="-1"></main>
+  <section id="panel" hidden aria-label="Panel docente"></section>
+  <footer class="nav">
+    <p class="hint" id="hint"></p>
+    <button class="btn" id="next" disabled>Siguiente</button>
+  </footer>
+</div>
+
+<script>
+(function(){
+"use strict";
+const $=(s,r=document)=>r.querySelector(s);
+const f1=n=>n.toLocaleString('es-AR',{minimumFractionDigits:1,maximumFractionDigits:1});
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const head=(eb,t,l)=>`<p class="eyebrow">${eb}</p><h1>${t}</h1>${l?`<p class="lead">${l}</p>`:''}`;
+const S={i:0,res:{}};
+
+/* ---------- componente: serie de preguntas rápidas ---------- */
+function series(body,api,cfg){
+  let i=0,ok=0;
+  function show(){
+    const it=cfg.items[i];
+    let opts=it.opts||cfg.opts; if(cfg.shuffle) opts=shuffle(opts);
+    body.innerHTML=`<div class="count">${i+1} de ${cfg.items.length}</div>
+      <div class="card big">${it.t}</div>
+      <div class="opts ${cfg.cols||''}" role="group" aria-label="Opciones">${opts.map(o=>`<button class="opt ${cfg.cols?'centerbtn':''}" data-id="${o.id}">${o.l}</button>`).join('')}</div>
+      <div id="fbx" aria-live="polite"></div>`;
+    body.querySelectorAll('.opt').forEach(b=>b.onclick=()=>answer(b,it));
+  }
+  function answer(btn,it){
+    const good=btn.dataset.id===it.a;
+    if(good) ok++;
+    body.querySelectorAll('.opt').forEach(b=>{b.disabled=true;if(b.dataset.id===it.a)b.classList.add('good');});
+    if(!good) btn.classList.add('bad');
+    const last=i===cfg.items.length-1;
+    $('#fbx',body).innerHTML=`<div class="fb ${good?'good':'bad'}"><b>${good?'Correcto':'No era esa'}</b>${it.hint}</div>
+      <button class="btn ${last?'coral':''}" id="go">${last?'Ver resultado':'Seguir'}</button>`;
+    $('#go',body).focus({preventScroll:true});
+    $('#go',body).onclick=()=>{ if(last) finish(); else {i++;show();} };
+  }
+  function finish(){
+    api.done({ok,total:cfg.items.length});
+    body.innerHTML=`<div class="card"><div class="score">${ok}/${cfg.items.length}</div>
+      <p style="text-align:center;margin:8px 0 0">${cfg.verdict(ok,cfg.items.length)}</p></div>${cfg.after||''}`;
+  }
+  show();
+}
+
+/* ---------- componente: opción múltiple con revelado ---------- */
+function mcq(body,api,cfg){
+  const opts=cfg.shuffle?shuffle(cfg.opts):cfg.opts.slice();
+  const L='ABCD';
+  body.innerHTML=`<div class="card">${cfg.q}</div>
+    <div class="opts">${opts.map((o,k)=>`<button class="opt" data-k="${k}"><span class="ltr">${L[k]}</span><span>${o.t}</span></button>`).join('')}</div>
+    <div id="fbx" aria-live="polite"></div>`;
+  body.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{
+    const k=+b.dataset.k, o=opts[k], good=!!o.ok;
+    body.querySelectorAll('.opt').forEach((x,j)=>{x.disabled=true;if(opts[j].ok)x.classList.add('good');});
+    if(!good) b.classList.add('bad');
+    const ci=opts.findIndex(x=>x.ok), di=opts.findIndex(x=>x.common);
+    $('#fbx',body).innerHTML=cfg.reveal({good,pick:o,L:L[k],correct:L[ci],common:di>=0?L[di]:null});
+    api.done({ok:good,pick:o.t,id:o.id});
+    $('#fbx',body).scrollIntoView({behavior:'smooth',block:'nearest'});
+  });
+}
+
+/* ---------- ESCENAS ---------- */
+const scenes=[
+
+/* 1 · Portada + objetivos */
+{id:'intro',label:'Inicio',render(root,api){
+  const obj=[
+   ['CLASIFICAR','los hongos patógenos por morfología y su relevancia clínica'],
+   ['IDENTIFICAR','las micosis endémicas de Argentina y cómo se presentan'],
+   ['RECONOCER','cuándo sospechar una micosis oportunista en el inmunocomprometido'],
+   ['SELECCIONAR','el antimicótico inicial']];
+  root.innerHTML=head('Cátedra de Enfermedades Infecciosas · UNT 2026','Micología clínica','Hongos patógenos y oportunistas para el médico clínico. Unos 15 minutos, una escena por pantalla.')+
+   `<div class="card"><b>Al terminar vas a poder…</b><p class="small" style="margin:4px 0 0">Tocá los que ya sentís que dominás. Al final comparamos.</p></div>
+    <div class="opts" id="ob">${obj.map((o,k)=>`<button class="opt" aria-pressed="false" data-k="${k}"><span><b>${o[0]}</b> ${o[1]}</span></button>`).join('')}</div>
+    <p class="small">Caso y datos de la clase: simulados, sin pacientes reales.</p>`;
+  let n=0; api.done({marked:0});
+  root.querySelectorAll('#ob .opt').forEach(b=>b.onclick=()=>{
+    const on=b.getAttribute('aria-pressed')==='true'; b.setAttribute('aria-pressed',String(!on));
+    n+=on?-1:1; api.done({marked:n});
+  });
+}},
+
+/* 2 · Apuesta antes del dato */
+{id:'bet',label:'¿Por qué importa?',render(root,api){
+  root.innerHTML=head('Apostá antes del dato','¿Por qué importa?','¿Cuántas personas mueren por año en el mundo por infecciones fúngicas?')+
+   `<div class="card"><div class="val" id="bv">1,0 <small>millones</small></div>
+    <input type="range" id="bs" min="0" max="10" step="0.1" value="1" aria-label="Millones de muertes por año">
+    <div class="small" style="display:flex;justify-content:space-between"><span>0</span><span>10 M</span></div></div>
+    <button class="btn coral" id="bb">Apostar</button><div id="bo" aria-live="polite"></div>`;
+  const s=$('#bs',root);
+  s.oninput=()=>{$('#bv',root).innerHTML=f1(+s.value)+' <small>millones</small>';};
+  $('#bb',root).onclick=()=>{
+    const g=+s.value, real=3.8, err=Math.abs(g-real);
+    s.disabled=true; $('#bb',root).remove();
+    const msg=err<=0.5?'Muy buena calibración.':(g<real?'Subestimaste: es lo más común con las micosis.':'Sobreestimaste, pero la carga real también es enorme.');
+    $('#bo',root).innerHTML=`<div class="track" aria-hidden="true">
+        <div class="mark me" style="left:${g*10}%"><span>vos ${f1(g)}</span></div>
+        <div class="mark real" style="left:${real*10}%"><span>real 3,8</span></div></div>
+      <div class="fb ${err<=1.5?'good':'bad'}"><b>Dato: 3,8 millones de muertes por año</b>${msg} Son la 4.ª causa de muerte infecciosa mundial y matan más que la malaria.</div>
+      <div class="stats"><div class="stat"><b>300 M</b><span>personas con infección fúngica grave</span></div><div class="stat"><b>80%</b><span>de los diagnósticos son tardíos o en autopsia</span></div></div>
+      <p class="small">La OMS 2022 priorizó Aspergillus, Candida, Cryptococcus y Mucorales como patógenos fúngicos críticos o de alta prioridad.</p>`;
+    api.done({guess:g,err});
+  };
+}},
+
+/* 3 · Clasificar: morfología */
+{id:'morf',label:'Morfología',render(root,api){
+  root.innerHTML=head('Clasificar','¿Cómo es este hongo?','Tres morfologías, tres mundos clínicos. Elegí la categoría de cada uno.')+'<div class="body"></div>';
+  series($('.body',root),api,{
+    opts:[{id:'lev',l:'Levadura'},{id:'fil',l:'Filamentoso'},{id:'dim',l:'Dimórfico'}],cols:'row3',
+    items:[
+     {t:'Candida',a:'lev',hint:' Levadura: unicelular, se reproduce por gemación.'},
+     {t:'Aspergillus',a:'fil',hint:' Filamentoso: forma hifas; en Aspergillus son septadas.'},
+     {t:'Coccidioides',a:'dim',hint:' Dimórfico: crece como micelio en el ambiente (25 °C) y como otra forma en el tejido (esférula con endosporas).'},
+     {t:'Mucor',a:'fil',hint:' Filamentoso: hifas anchas, no septadas, que invaden tejido.'},
+     {t:'Cryptococcus',a:'lev',hint:' Levadura encapsulada, con tropismo por el SNC.'},
+     {t:'Paracoccidioides',a:'dim',hint:' Dimórfico: en tejido, levadura con múltiples yemas ("rueda de timón").'}],
+    verdict:(o,t)=>o>=5?'Tenés clara la morfología.':'Repasá: levadura gemante, filamentoso con hifas, dimórfico que cambia con la temperatura.',
+    after:'<p class="small">Regla: dimórfico = levadura en tejido (37 °C) y micelio en el ambiente (25 °C).</p>'
+  });
+}},
+
+/* 4 · Pistas: ¿cuándo pensar en hongos? */
+{id:'pistas',label:'Cuándo pensar en hongos',render(root,api){
+  root.innerHTML=head('Emparejar','¿Cuándo pensar en hongos?','Dos puertas de entrada: exposición + endemia en huésped sano, o inmunocompromiso. ¿Qué hongo sugiere cada pista?')+'<div class="body"></div>';
+  series($('.body',root),api,{shuffle:true,
+    items:[
+     {t:'Cuevas, gallineros y palomares',a:'h',opts:[{id:'h',l:'Histoplasma'},{id:'c',l:'Coccidioides'},{id:'s',l:'Sporothrix'},{id:'ca',l:'Candida'}],hint:' Histoplasma: se inhala desde suelos enriquecidos con guano de aves o murciélagos.'},
+     {t:'Polvo de suelo árido del NOA y Cuyo',a:'c',opts:[{id:'c',l:'Coccidioides'},{id:'p',l:'Paracoccidioides'},{id:'a',l:'Aspergillus'},{id:'cr',l:'Cryptococcus'}],hint:' Coccidioides: zonas áridas (La Rioja, San Juan, Mendoza, Catamarca).'},
+     {t:'Trabajador rural del norte húmedo con úlcera en el paladar',a:'p',opts:[{id:'p',l:'Paracoccidioides'},{id:'h',l:'Histoplasma'},{id:'m',l:'Mucor'},{id:'ca',l:'Candida'}],hint:' Paracoccidioides: suelo húmedo y actividad rural; lesión típica en mucosa oral.'},
+     {t:'HIV con CD4 menor de 200 y meningitis subaguda',a:'cr',opts:[{id:'cr',l:'Cryptococcus'},{id:'m',l:'Mucor'},{id:'s',l:'Sporothrix'},{id:'a',l:'Aspergillus'}],hint:' Cryptococcus: portal pulmonar y tropismo por el SNC en inmunosupresión avanzada.'},
+     {t:'Neutropenia prolongada con infiltrado pulmonar',a:'a',opts:[{id:'a',l:'Aspergillus'},{id:'p',l:'Paracoccidioides'},{id:'c',l:'Coccidioides'},{id:'s',l:'Sporothrix'}],hint:' Aspergillus: angioinvasión y infarto pulmonar en neutropenia prolongada.'},
+     {t:'Catéter venoso central y antibióticos de amplio espectro',a:'ca',opts:[{id:'ca',l:'Candida'},{id:'h',l:'Histoplasma'},{id:'c',l:'Coccidioides'},{id:'cr',l:'Cryptococcus'}],hint:' Candida: flora que invade a través del catéter.'}],
+    verdict:o=>o>=5?'Buen ojo para el contexto.':'Clave: el contexto del huésped orienta antes que el laboratorio.'
+  });
+}},
+
+/* 5 · Clasificar: Candida vs Aspergillus */
+{id:'ca',label:'Candida vs Aspergillus',render(root,api){
+  root.innerHTML=head('Clasificar','Candida o Aspergillus','Cada dato clínico, ¿a cuál apunta?')+'<div class="body"></div>';
+  series($('.body',root),api,{cols:'row',
+    opts:[{id:'c',l:'Candida'},{id:'a',l:'Aspergillus'}],
+    items:[
+     {t:'Hemocultivos y retirar el catéter',a:'c',hint:' Candidemia: hemocultivos, buscar focos y retirar el CVC.'},
+     {t:'Signo del halo en la TC de tórax',a:'a',hint:' El halo en un neutropénico sugiere aspergilosis invasiva.'},
+     {t:'Primera línea: equinocandina',a:'c',hint:' Equinocandinas en candidiasis invasiva. Ojo con C. auris: resistente a azoles, usar equinocandinas.'},
+     {t:'Galactomanano sérico',a:'a',hint:' Galactomanano, TC y biopsia o directo orientan a Aspergillus.'},
+     {t:'Neutropenia, corticoides, EPOC',a:'a',hint:' Factores de riesgo clásicos de aspergilosis invasiva.'},
+     {t:'Nutrición parenteral y cirugía abdominal',a:'c',hint:' Factores de riesgo de candidemia, junto con CVC y antibióticos de amplio espectro.'}],
+    verdict:o=>o>=5?'Muy bien: los distinguís por contexto y herramienta.':'Candida: catéter, hemocultivos, equinocandina. Aspergillus: neutropenia, halo, galactomanano.'
+  });
+}},
+
+/* 6 · Mucor: señales de alarma */
+{id:'mucor',label:'Mucormicosis: alarmas',render(root,api){
+  const O=[
+   {t:'Cetoacidosis diabética',ok:1},
+   {t:'Necrosis palatina o nasal',ok:1},
+   {t:'Dolor facial y rinorrea oscura',ok:1},
+   {t:'Hifas anchas, paucitabicadas, ramificadas a ~90°',ok:1},
+   {t:'Progresión en horas a días',ok:1},
+   {t:'Levaduras con halo claro en tinta china',ok:0},
+   {t:'Levaduras "en rueda de timón"',ok:0},
+   {t:'Hifas finas septadas ramificadas a 45°',ok:0}];
+  const list=shuffle(O);
+  root.innerHTML=head('Mucormicosis','Reconocer la alarma','Adulto con diabetes y dolor facial. Tocá todas las señales que apuntan a mucormicosis rinocerebral.')+
+   `<div class="opts" id="ms">${list.map((o,k)=>`<button class="opt" aria-pressed="false" data-k="${k}">${o.t}</button>`).join('')}</div>
+    <button class="btn coral" id="chk">Comprobar</button><div id="mo" aria-live="polite"></div>`;
+  const bs=[...root.querySelectorAll('#ms .opt')];
+  bs.forEach(b=>b.onclick=()=>{b.setAttribute('aria-pressed',String(b.getAttribute('aria-pressed')!=='true'));});
+  $('#chk',root).onclick=()=>{
+    let hit=0,wrong=0;
+    bs.forEach((b,k)=>{
+      const sel=b.getAttribute('aria-pressed')==='true', ok=list[k].ok; b.disabled=true;
+      if(sel&&ok){hit++;b.classList.add('good');} else if(sel&&!ok){wrong++;b.classList.add('bad');} else if(!sel&&ok){b.classList.add('miss');}
+    });
+    $('#chk',root).remove();
+    const score=Math.max(0,hit-wrong);
+    $('#mo',root).innerHTML=`<div class="fb ${score>=4?'good':'bad'}"><b>${hit} de 5 señales, ${wrong} de más</b>Las de borde punteado son señales que faltaron. Las levaduras con halo son Cryptococcus; la rueda de timón, Paracoccidioides; las hifas finas a 45°, Aspergillus.</div>
+      <div class="fb good"><b>Mensaje clave</b>La mucormicosis progresa en horas: hay que reconocerla y tratarla sin demora.</div>`;
+    api.done({score,max:5});
+  };
+}},
+
+/* 7 · Predicción de conducta */
+{id:'pred',label:'Conducta ante mucormicosis',render(root,api){
+  root.innerHTML=head('Apostá antes del dato','Tu primera conducta','')+'<div class="body"></div>';
+  mcq($('.body',root),api,{shuffle:true,
+    q:'<b>Caso simulado.</b> Hombre de 58 años con diabetes tipo 2, glucemia 540 mg/dl y cetoacidosis. Edema periorbitario, cefalea y una escara negruzca en el paladar. Se sospecha mucormicosis rinoorbitaria. <b>¿Cuál es la conducta inicial más adecuada?</b>',
+    opts:[
+     {id:'a',t:'Voriconazol empírico y esperar el cultivo antes de decidir la cirugía.',common:1,why:'El voriconazol no cubre Mucorales y hace perder horas decisivas.'},
+     {id:'b',t:'Corregir primero la cetoacidosis y diferir el antifúngico hasta confirmar por micología.',why:'No es secuencial: cada día de espera cuenta.'},
+     {id:'c',t:'Anfotericina B liposomal, desbridamiento quirúrgico urgente y corrección metabólica, todo a la vez y sin esperar el cultivo.',ok:1},
+     {id:'d',t:'Anfotericina B liposomal y reservar la cirugía por si no responde en 7 a 10 días.',why:'La cirugía precoz es parte del tratamiento, no un rescate.'}],
+    reveal:r=>`<div class="fb ${r.good?'good':'bad'}"><b>${r.good?'Tu apuesta fue correcta':'Correcta: la '+r.correct}</b>
+      ${r.good?'':`Elegiste la ${r.L}. ${r.pick.why||''}<br>`}
+      En mucormicosis no hay orden secuencial: se corrige el factor predisponente, se inicia anfotericina B liposomal ante la sospecha y se desbrida de forma urgente, las tres a la vez.</div>
+      <div class="fb"><b>El error clásico: la ${r.common}</b>Tratar una sinusitis fúngica en un paciente de riesgo como si fuera aspergilosis. Esperar el cultivo, usar un antifúngico sin actividad contra Mucorales o diferir la cirugía son los errores que se asocian a peor evolución.</div>
+      <p class="small">Guía global ECMM/MSG ERC 2019: tras la imagen, cirugía fuertemente recomendada; primera línea con anfotericina B liposomal en dosis altas. <a href="https://doi.org/10.1016/S1473-3099(19)30312-3" target="_blank" rel="noopener">Cornely et al., Lancet Infect Dis 2019</a> (PubMed).</p>`
+  });
+}},
+
+/* 8 · Gráfico con control deslizante */
+{id:'delay',label:'El costo de esperar',render(root,api){
+  root.innerHTML=head('Gráfico interactivo','El costo de esperar','Mové el control: ¿cuántos días pasan hasta empezar la anfotericina B desde el diagnóstico?')+
+   `<div class="card">
+     <div class="val" id="dv">1 <small>día</small></div>
+     <input type="range" id="ds" min="0" max="10" step="1" value="1" aria-label="Días hasta iniciar anfotericina B">
+     <div class="small" style="display:flex;justify-content:space-between"><span>mismo día</span><span>10 días</span></div></div>
+    <div class="chart" role="img" aria-label="Mortalidad a 12 semanas: 48,6% si el inicio es precoz y 82,9% si se demora 6 días o más">
+      <div class="col early" id="ce"><div class="num">48,6%</div><div class="b" style="height:48.6%"></div></div>
+      <div class="col late dim" id="cl"><div class="num">82,9%</div><div class="b" style="height:82.9%"></div></div></div>
+    <div class="labels"><div>Inicio precoz<br>(menos de 6 días)</div><div>Inicio tardío<br>(6 días o más)</div></div>
+    <div class="fb" id="dfb" aria-live="polite"><b>Mortalidad a 12 semanas</b>Mové el control a ambos lados del día 6.</div>
+    <p class="small">Chamilos et al., Clin Infect Dis 2008: 70 pacientes consecutivos con neoplasia hematológica y mucormicosis (1989 a 2006). El corte de 6 días surgió de un análisis de árbol de clasificación; ajustado, el retraso fue predictor independiente de mala evolución (OR 8,1; IC 95% 1,7 a 38,2). No es una cohorte de personas con diabetes y el estudio compara dos grupos, no cada día. <a href="https://doi.org/10.1086/590004" target="_blank" rel="noopener">DOI</a> (PubMed).</p>`;
+  const s=$('#ds',root); let lo=false,hi=false;
+  const upd=()=>{
+    const d=+s.value, late=d>=6;
+    $('#dv',root).innerHTML=d+' <small>'+(d===1?'día':'días')+'</small>';
+    $('#ce',root).classList.toggle('dim',late); $('#cl',root).classList.toggle('dim',!late);
+    $('#dfb',root).className='fb '+(late?'bad':'good');
+    $('#dfb',root).innerHTML=late?'<b>82,9% de mortalidad a 12 semanas</b>Con 6 días o más de demora, la mortalidad casi se duplica.':'<b>48,6% de mortalidad a 12 semanas</b>Aun con inicio precoz es alta: por eso la cirugía y el control metabólico van en paralelo.';
+    if(late)hi=true; else lo=true;
+    if(lo&&hi){api.done({seen:true});$('#hint').textContent='';}
+  };
+  s.oninput=upd; api.hint='Mové el control a ambos lados del día 6 para seguir';
+}},
+
+/* 9 · Ordenar por mortalidad */
+{id:'orden',label:'Ordenar por mortalidad',render(root,api){
+  const D={muc:['Mucormicosis',60],asp:['Aspergilosis invasiva',42],cri:['Criptococosis (HIV)',35],can:['Candidiasis invasiva',30],his:['Histoplasmosis diseminada',20],pcm:['Paracoccidioidomicosis',8]};
+  let ord=['can','pcm','asp','his','muc','cri'];
+  const real=['muc','asp','cri','can','his','pcm'];
+  root.innerHTML=head('Ordenar','¿Cuál mata más?','Ordená de mayor a menor mortalidad estimada con tratamiento disponible. Usá las flechas.')+
+   '<ol class="ord" id="ol"></ol><button class="btn coral" id="ck">Comprobar orden</button><div id="oo" aria-live="polite"></div>';
+  const ol=$('#ol',root);
+  function draw(){
+    ol.innerHTML=ord.map((k,i)=>`<li><span class="pill">${i+1}</span><span class="nm">${D[k][0]}</span>
+      <button class="mv" data-d="-1" data-i="${i}" aria-label="Subir ${D[k][0]}" ${i===0?'disabled':''}>▲</button>
+      <button class="mv" data-d="1" data-i="${i}" aria-label="Bajar ${D[k][0]}" ${i===ord.length-1?'disabled':''}>▼</button></li>`).join('');
+  }
+  ol.onclick=e=>{const b=e.target.closest('.mv'); if(!b)return; const i=+b.dataset.i,d=+b.dataset.d; [ord[i],ord[i+d]]=[ord[i+d],ord[i]]; draw();
+    const nb=ol.querySelector(`.mv[data-i="${i+d}"][data-d="${d}"]`); if(nb) nb.focus({preventScroll:true});};
+  draw();
+  $('#ck',root).onclick=()=>{
+    let ok=0; ord.forEach((k,i)=>{if(k===real[i])ok++;});
+    $('#ck',root).remove();
+    ol.className='ord res';
+    ol.innerHTML=real.map((k,i)=>{const mine=ord.indexOf(k)+1, g=mine===i+1;
+      return `<li class="${g?'ok':'no'}"><div class="top"><b>${i+1}. ${D[k][0]}</b><span>${D[k][1]}%</span></div>
+      <div class="rk" style="width:${D[k][1]/60*100}%"></div><span class="small">${g?'✓ acertaste el puesto':'✗ la pusiste en el '+mine}</span></li>`;}).join('');
+    $('#oo',root).innerHTML=`<div class="fb ${ok>=4?'good':'bad'}"><b>${ok} de 6 en su lugar</b>La mucormicosis encabeza la lista y la forma diseminada supera el 80%. En criptococosis sin TARV ni anfotericina, la mortalidad fue 47% a las 10 semanas en África.</div>
+      <p class="small">Valores del gráfico de la clase (estimaciones ECMM/ISHAM 2019 a 2025).</p>`;
+    api.done({ok,total:6});
+  };
+}},
+
+/* 10 · Antimicóticos */
+{id:'anti',label:'Antimicóticos',render(root,api){
+  root.innerHTML=head('Seleccionar','El antimicótico inicial','Elegí el grupo que corresponde. Regla rápida: la anfotericina B es la más amplia.')+'<div class="body"></div>';
+  series($('.body',root),api,{
+    opts:[{id:'p',l:'Anfotericina B liposomal'},{id:'a',l:'Azol'},{id:'e',l:'Equinocandina'},{id:'f',l:'Flucitosina'}],cols:'row3',
+    items:[
+     {t:'Mucormicosis rinocerebral',a:'p',hint:' Anfotericina B liposomal. Fluconazol, voriconazol y equinocandinas no cubren Mucor.'},
+     {t:'Candidemia, primera línea',a:'e',hint:' Equinocandinas (caspofungina, micafungina, anidulafungina).'},
+     {t:'Aspergilosis invasiva',a:'a',hint:' Azol: voriconazol o isavuconazol.'},
+     {t:'Paracoccidioidomicosis moderada',a:'a',hint:' Itraconazol, el azol de primera línea.'},
+     {t:'Se combina con anfotericina B en la meningitis criptocócica; nunca se usa sola',a:'f',hint:' Flucitosina (5-FC): siempre en combinación.'}],
+    verdict:o=>o>=4?'Elegís bien el grupo inicial.':'Regla: AnfoB = la más amplia; azol = Aspergillus; equinocandina = Candida; flucitosina nunca sola.'
+  });
+}},
+
+/* 11 · Caso ramificado */
+{id:'caso',label:'Caso ramificado',render(root,api){
+  const N={
+   n1:{step:1,q:'Paso 1. ¿Qué hacés primero para llegar al diagnóstico?',opts:[
+     {t:'Examen directo de la úlcera (KOH) y serología por inmunodifusión',q:'best',fb:'Directo y serología son rápidos, accesibles y orientan a micosis endémica.',next:'n2'},
+     {t:'Corticoides sistémicos para la inflamación de la úlcera',q:'bad',fb:'Inmunosuprimir sin diagnóstico puede empeorar una micosis profunda.',next:'lost'},
+     {t:'Antituberculosos empíricos y esperar la respuesta',q:'bad',fb:'La TBC es un diferencial, pero tratar sin confirmar demora el diagnóstico.',next:'lost'},
+     {t:'Solo hemocultivos y esperar',q:'bad',fb:'Rinde poco aquí: la lesión accesible permite un estudio directo.',next:'lost'}]},
+   lost:{info:true,text:'Pasan semanas sin diagnóstico: la fiebre persiste y el paciente adelgaza más. Lo reevaluás y pedís los estudios que correspondían.',next:'n2'},
+   n2:{step:2,res:true,q:'Paso 2. Con estos resultados, ¿cuál es el diagnóstico?',opts:[
+     {t:'Paracoccidioidomicosis crónica del adulto',q:'best',fb:'Rueda de timón en el directo, bandas m y b en la inmunodifusión y granuloma con levaduras multigemantes. Forma pulmonar, mucocutánea y ganglionar.',next:'n3'},
+     {t:'Tuberculosis pulmonar y ganglionar',q:'bad',fb:'Diferencial válido, pero la rueda de timón y la serología definen paracoccidioidomicosis.',next:'n3'},
+     {t:'Leishmaniasis mucocutánea',q:'bad',fb:'Es diferencial de la úlcera palatina, pero la biopsia mostró levaduras multigemantes.',next:'n3'},
+     {t:'Carcinoma epidermoide',q:'bad',fb:'Diferencial de una úlcera indurada, descartado por la biopsia con granuloma y levaduras.',next:'n3'}]},
+   n3:{step:3,q:'Paso 3. ¿Cuál es el tratamiento de primera línea?',opts:[
+     {t:'Itraconazol 200 mg/día durante 18 meses, con control hepático mensual',q:'best',fb:'Es el esquema de la clase para esta forma moderada-severa. Alternativa accesible: TMP-SMX.',next:'n4'},
+     {t:'Antituberculosos',q:'bad',fb:'El diagnóstico no es tuberculosis.',next:'n4'},
+     {t:'Caspofungina IV',q:'bad',fb:'Las equinocandinas no cubren los hongos endémicos.',next:'n4'},
+     {t:'Fluconazol en dosis única',q:'bad',fb:'Una dosis única no trata una micosis sistémica.',next:'n4'}]},
+   n4:{step:4,q:'Paso 4. ¿Cómo seguís al paciente?',opts:[
+     {t:'Serología cada 3 meses y función hepática mensual',q:'best',fb:'El descenso de títulos indica respuesta. Al terminar: TMP-SMX como profilaxis; las secuelas fibróticas son frecuentes.',next:'end'},
+     {t:'Alta y control solo si reaparecen síntomas',q:'bad',fb:'Hace falta seguimiento serológico y hepático durante el tratamiento.',next:'end'},
+     {t:'Ecografía abdominal semanal',q:'bad',fb:'No es el seguimiento indicado; el control es serológico, hepático y de espirometría.',next:'end'}]}
+  };
+  const steps=[];let detours=0;
+  const fich=`<details class="card case-card"><summary>Ficha del caso simulado</summary><p style="margin:0"><b>Hombre de 48 años, trabajador rural del norte de Salta.</b> Fiebre de 3 semanas, tos seca, pérdida de 6 kg y úlcera en el paladar que no cicatriza. Fumador de 20 paquetes/año, HIV negativo, sin tratamientos previos.</p>
+   <ul><li>T 38,4 °C, adenopatías cervicales bilaterales</li><li>Rales crepitantes en base derecha</li><li>Úlcera en paladar duro de 2 cm, bordes indurados, aspecto granular</li></ul></details>`;
+  root.innerHTML=head('Caso ramificado','Decidí paso a paso','Tus decisiones cambian el camino. Caso simulado, sin pacientes reales.')+fich+'<div id="cs"></div>';
+  const cs=$('#cs',root);
+  function dots(){return `<div class="dots" aria-hidden="true">${[0,1,2,3].map(k=>`<i class="${steps[k]==='best'?'on':steps[k]==='bad'?'bad':''}"></i>`).join('')}</div>`;}
+  function node(key){
+    const n=N[key];
+    if(key==='end'){
+      const ok=steps.filter(x=>x==='best').length;
+      cs.innerHTML=dots()+`<div class="card"><div class="score">${ok}/4</div><p style="text-align:center;margin:8px 0 0">${ok===4?'Recorrido impecable.':'Terminaste el caso'+(detours?' con '+detours+' desvío'+(detours>1?'s':''):'')+'.'}</p></div>
+       <div class="fb good"><b>Resumen</b>Paracoccidioidomicosis crónica: rueda de timón, serología por inmunodifusión, itraconazol 18 meses y seguimiento serológico.</div>`;
+      api.done({ok,total:4,detours}); return;
+    }
+    if(n.info){
+      detours++;
+      cs.innerHTML=dots()+`<div class="fb bad"><b>Desvío</b>${n.text}</div><button class="btn" id="cn">Continuar</button>`;
+      $('#cn',cs).onclick=()=>node(n.next); return;
+    }
+    cs.innerHTML=dots()+(n.res?`<div class="card case-card"><b>Resultados</b><ul><li>Directo de la úlcera: rueda de timón</li><li>Serología por inmunodifusión: positiva, bandas m y b</li><li>TC de tórax: micronódulos bilaterales y fibrosis</li><li>HIV negativo</li><li>Biopsia: granuloma con levaduras multigemantes</li></ul></div>`:'')+
+     `<div class="card"><b>${n.q}</b></div><div class="opts">${n.opts.map((o,k)=>`<button class="opt" data-k="${k}">${o.t}</button>`).join('')}</div><div id="cfb" aria-live="polite"></div>`;
+    cs.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{
+      const o=n.opts[+b.dataset.k]; steps[n.step-1]=o.q;
+      cs.querySelectorAll('.opt').forEach((x,j)=>{x.disabled=true;if(n.opts[j].q==='best')x.classList.add('good');});
+      if(o.q!=='best')b.classList.add('bad');
+      $('#cfb',cs).innerHTML=`<div class="fb ${o.q==='best'?'good':'bad'}"><b>${o.q==='best'?'Buena decisión':'Mejor otra opción'}</b>${o.fb}</div><button class="btn" id="cn">Continuar</button>`;
+      $('#cn',cs).onclick=()=>node(o.next); $('#cn',cs).scrollIntoView({behavior:'smooth',block:'nearest'});
+    });
+  }
+  node('n1');
+}},
+
+/* 12 · Repaso */
+{id:'repaso',label:'Repaso final',render(root,api){
+  root.innerHTML=head('Repaso','Una última','')+'<div class="body"></div>';
+  mcq($('.body',root),api,{shuffle:true,
+    q:'<b>¿Qué tinción y hallazgo confirma criptococosis en el LCR de un paciente con HIV y meningitis subaguda?</b>',
+    opts:[
+     {t:'Gram: diplococos grampositivos encapsulados'},
+     {t:'Tinta china: levaduras con halo claro (cápsula) sobre fondo oscuro',ok:1},
+     {t:'Ziehl-Neelsen: BAAR en LCR'},
+     {t:'KOH: hifas no tabicadas anchas'}],
+    reveal:r=>`<div class="fb ${r.good?'good':'bad'}"><b>${r.good?'Correcto':'Correcta: la '+r.correct}</b>La tinta china muestra la cápsula de Cryptococcus como un halo claro. El antígeno criptocócico en suero o LCR tiene sensibilidad muy alta. Tratamiento: anfotericina B liposomal con flucitosina 2 semanas, luego fluconazol.</div>`
+  });
+}},
+
+/* 13 · Recorrido */
+{id:'fin',label:'Tu recorrido',render(root,api){
+  const R=S.res, rows=[];
+  const add=(id,name,txt,frac,pearl)=>rows.push({id,name,txt,frac,pearl});
+  const B=R.bet||{}; add('bet','¿Por qué importa?',`Apostaste ${f1(B.guess||0)} M; dato real 3,8 M`,B.err<=0.5?1:B.err<=1.5?0.6:0.2,'Las micosis causan unos 3,8 millones de muertes por año y 300 millones de personas viven con infección grave.');
+  const sr=(id,name,pearl)=>{const r=R[id]||{ok:0,total:1};add(id,name,`${r.ok} de ${r.total}`,r.ok/r.total,pearl);};
+  sr('morf','Morfología','Levadura: gemación. Filamentoso: hifas (Aspergillus septado, Mucor no). Dimórfico: levadura en tejido a 37 °C y micelio a 25 °C.');
+  sr('pistas','Cuándo pensar en hongos','El contexto orienta: exposición y endemia en huésped sano, u oportunistas en inmunocomprometidos.');
+  sr('ca','Candida vs Aspergillus','Candida: catéter, hemocultivos, equinocandina. Aspergillus: neutropenia, halo, galactomanano.');
+  const M=R.mucor||{score:0,max:5}; add('mucor','Mucormicosis: alarmas',`${M.score} de ${M.max} señales netas`,M.score/M.max,'Diabético con cetoacidosis y necrosis palatina o nasal: alarma. Hifas anchas, paucitabicadas, a 90°.');
+  const P=R.pred||{}; add('pred','Conducta ante mucormicosis',P.ok?'Acertaste a la primera':'Elegiste otra opción',P.ok?1:0,'Anfotericina B liposomal, cirugía urgente y control metabólico, a la vez y sin esperar el cultivo.');
+  rows.push({id:'delay',name:'El costo de esperar',txt:'48,6% vs 82,9% a 12 semanas',frac:null,pearl:''});
+  sr('orden','Ordenar por mortalidad','La mucormicosis es la de mayor mortalidad del gráfico (60%); la forma diseminada supera el 80%.');
+  sr('anti','Antimicóticos','AnfoB = la más amplia; azol = Aspergillus; equinocandina = Candida; flucitosina nunca sola.');
+  const C=R.caso||{ok:0,total:4,detours:0}; add('caso','Caso ramificado',`${C.ok} de ${C.total} decisiones`+(C.detours?`, ${C.detours} desvío`:''),C.ok/C.total,'Paracoccidioidomicosis: rueda de timón, inmunodifusión, itraconazol 200 mg/día por 18 meses, seguimiento serológico.');
+  const Q=R.repaso||{}; add('repaso','Repaso: criptococosis',Q.ok?'Acertaste':'Para repasar',Q.ok?1:0,'Tinta china: levaduras con halo claro = Cryptococcus. AnfoB-L con flucitosina, luego fluconazol.');
+  const sc=rows.filter(r=>r.frac!==null), pct=Math.round(sc.reduce((a,r)=>a+r.frac,0)/sc.length*100);
+  const rev=rows.filter(r=>r.frac!==null&&r.frac<0.7);
+  const I=R.intro||{marked:0};
+  const txt=`Mi recorrido en Micología clínica (UNT 2026): ${pct}%\n`+rows.map(r=>`- ${r.name}: ${r.txt}`).join('\n');
+  root.innerHTML=head('Fin del recorrido','Tu recorrido','')+
+   `<div class="card"><div class="score">${pct}%</div><p style="text-align:center;margin:6px 0 0">${pct>=80?'Sólido. Podés enseñarlo.':pct>=55?'Buen avance. Mirá lo que conviene repasar.':'Punto de partida claro: repasá lo marcado abajo.'}</p>
+     <p class="small" style="text-align:center;margin:6px 0 0">Al empezar marcaste ${I.marked} de 4 objetivos como dominados.</p></div>
+    <ol class="path">${rows.map(r=>`<li class="${r.frac===null?'info':r.frac<0.7?'rev':''}"><b>${r.name}</b><span>${r.txt}</span></li>`).join('')}</ol>
+    ${rev.length?`<h2 style="font-size:1.2rem;color:var(--v-d);margin:0 0 10px">Para repasar</h2>${rev.map(r=>`<div class="rev-item"><b>${r.name}</b><br><span class="small">${r.pearl}</span></div>`).join('')}`:'<div class="fb good"><b>Nada para repasar</b>Todas las escenas por encima del 70%.</div>'}
+    <div class="opts"><button class="btn" id="cp">Copiar mi recorrido</button><button class="btn ghost" id="rs">Volver a empezar</button></div>
+    <div id="cpo" class="small" aria-live="polite"></div>
+    <details class="card"><summary>Bibliografía</summary><div class="small">
+     <p>Cornely OA, et al. Global guideline for the diagnosis and management of mucormycosis (ECMM/MSG ERC). Lancet Infect Dis 2019;19:e405-21. <a href="https://doi.org/10.1016/S1473-3099(19)30312-3" target="_blank" rel="noopener">DOI</a> (PubMed).</p>
+     <p>Chamilos G, Lewis RE, Kontoyiannis DP. Delaying amphotericin B-based frontline therapy significantly increases mortality among patients with hematologic malignancy who have zygomycosis. Clin Infect Dis 2008;47:503-9. <a href="https://doi.org/10.1086/590004" target="_blank" rel="noopener">DOI</a> (PubMed).</p>
+     <p>Messina FA. Histoplasmosis. Resumen 2021. Angeletti R. Coccidioidomicosis. Resumen 2021. Yantorno V. Paracoccidioidomicosis. Resumen 2021. Cátedra Enf. Infecciosas UNT.</p>
+     <p>PAHO/WHO. Neglected Fungal Diseases. 2023. Lancet Infect Dis. Global burden of fungal disease. 2022;22(3).</p>
+     <p>Gráfico de mortalidad: estimaciones del guion de la cátedra (ECMM/ISHAM 2019 a 2025).</p></div></details>
+    <p class="small" style="text-align:center">Cátedra de Enfermedades Infecciosas · UNT 2026</p>`;
+  $('#rs',root).onclick=()=>{S.res={};go(0);};
+  $('#cp',root).onclick=async()=>{
+    const out=$('#cpo',root);
+    try{await navigator.clipboard.writeText(txt);out.textContent='Copiado.';}
+    catch(e){const t=document.createElement('textarea');t.value=txt;t.style.cssText='width:100%;height:160px';out.textContent='';out.appendChild(t);t.select();}
+  };
+  api.done({pct}); api.last=true;
+}}
+];
+
+/* ---------- registro anónimo (solo con sesión y permiso de colaborador) ---------- */
+const NSC=scenes.length;
+function rid(){let a;try{a=crypto.getRandomValues(new Uint8Array(8));}catch(e){a=Array.from({length:8},()=>Math.floor(Math.random()*256));}return 's'+Array.from(a).map(x=>x.toString(16).padStart(2,'0')).join('');}
+const T={sid:null,ready:false,room:null,doc:null,t0:Date.now(),s:{s:1,done:false,pred:null,pct:null},writing:false,dirty:false};
+try{T.sid=sessionStorage.getItem('mc_sid');}catch(e){}
+if(!T.sid){T.sid=rid();try{sessionStorage.setItem('mc_sid',T.sid);}catch(e){}}
+async function flush(){
+  if(T.writing){T.dirty=true;return;}
+  T.writing=true;
+  do{T.dirty=false;
+    try{await T.doc.set({s:T.s.s,done:T.s.done,pred:T.s.pred,pct:T.s.pct,t:T.t0,u:Date.now(),v:1});}
+    catch(e){if(e&&e.code==='invalid_argument'){T.doc=null;}}
+  }while(T.dirty&&T.doc);
+  T.writing=false;
+}
+function trackPush(){
+  if(!T.ready)return;
+  if(T.room)T.room.presence({sid:T.sid,s:T.s.s,done:T.s.done,pred:T.s.pred,pct:T.s.pct}).catch(()=>{});
+  if(T.doc)flush();
+}
+function track(p){
+  let ch=false;
+  if(p.s&&p.s>T.s.s){T.s.s=p.s;ch=true;}
+  for(const k of ['done','pred','pct']) if(k in p&&p[k]!==T.s[k]){T.s[k]=p[k];ch=true;}
+  if(ch)trackPush();
+}
+const A={rows:{},peers:[],q:Promise.resolve(),pend:{},db:null,on:false};
+const PRED={a:'Voriconazol y esperar el cultivo',b:'Corregir DM y diferir el antifúngico',c:'AnfoB-L + cirugía + metabólico a la vez',d:'AnfoB-L y cirugía diferida'};
+function merged(){
+  const m=new Map();
+  for(const id in A.rows){const d=A.rows[id];m.set(id,{s:d.s||1,done:!!d.done,pred:d.pred||null,live:false});}
+  for(const p of A.peers){
+    if(p.isMe||p.kind!=='viewer')continue; const x=p.presence||{}; if(!x.sid)continue;
+    const c=m.get(x.sid)||{s:0,done:false,pred:null};
+    m.set(x.sid,{s:Math.max(c.s,x.s||0),done:c.done||!!x.done,pred:c.pred||x.pred||null,live:true});
+  }
+  return m;
+}
+function persistRoom(){
+  if(!A.db)return;
+  for(const p of A.peers){
+    if(p.isMe||p.kind!=='viewer')continue; const x=p.presence||{}; if(!x.sid||A.pend[x.sid])continue;
+    const r=A.rows[x.sid];
+    if(!r||(x.s||0)>(r.s||0)||(x.done&&!r.done)||(x.pred&&!r.pred)){
+      A.pend[x.sid]=1;
+      const body={s:Math.max(x.s||1,(r&&r.s)||0),done:!!x.done||!!(r&&r.done),pred:x.pred||(r&&r.pred)||null,pct:x.pct==null?((r&&r.pct)==null?null:r.pct):x.pct,t:(r&&r.t)||Date.now(),u:Date.now(),v:1,via:'room'};
+      A.q=A.q.then(()=>A.db.doc('sessions/'+x.sid).set(body)).catch(()=>{}).then(()=>{delete A.pend[x.sid];});
+    }
+  }
+}
+function renderPanel(){
+  const el=$('#panel'); if(el.hidden)return;
+  const m=merged(), rows=[...m.values()], n=rows.length, fin=rows.filter(r=>r.done).length;
+  const live=A.peers.filter(p=>!p.isMe&&p.kind==='viewer'&&p.presence&&p.presence.sid).length;
+  const pct=n?Math.round(fin/n*100):0;
+  const reach=k=>rows.filter(r=>r.s>=k).length;
+  const votes={a:0,b:0,c:0,d:0}; rows.forEach(r=>{if(r.pred&&votes[r.pred]!=null)votes[r.pred]++;});
+  const nv=Object.values(votes).reduce((a,b)=>a+b,0);
+  el.innerHTML=`<p class="eyebrow">Solo lo ves vos</p><h1>Panel docente</h1>
+   <p class="lead">Conteo anónimo: no se guarda nombre, correo ni cuenta de nadie.</p>
+   <div class="stats"><div class="stat"><b>${n}</b><span>ingresaron</span></div><div class="stat"><b>${fin}</b><span>terminaron (${pct}%)</span></div></div>
+   <div class="stats"><div class="stat"><b>${live}</b><span>en línea ahora</span></div><div class="stat"><b>${nv}</b><span>votaron la predicción</span></div></div>
+   <h2 style="font-size:1.1rem;color:var(--v-d);margin:6px 0 8px">Cuántos llegaron a cada escena</h2>
+   <div class="funnel">${scenes.map((sc,k)=>{const c=reach(k+1);return `<div class="fr"><span class="nm">${k+1}. ${sc.label}</span><span class="tr"><i class="${k===NSC-1?'c':''}" style="width:${n?c/n*100:0}%"></i></span><b>${c}</b></div>`;}).join('')}</div>
+   <h2 style="font-size:1.1rem;color:var(--v-d);margin:6px 0 8px">Qué apostó la audiencia (conducta ante mucormicosis)</h2>
+   <div class="funnel">${['a','b','c','d'].map(k=>`<div class="fr"><span class="nm" title="${PRED[k]}">${PRED[k]}</span><span class="tr"><i class="${k==='c'?'':'c'}" style="width:${nv?votes[k]/nv*100:0}%"></i></span><b>${votes[k]}</b></div>`).join('')}</div>
+   <p class="small">La opción correcta es la tercera (violeta). Cuenta a quienes abren la clase con sesión iniciada y permiso de colaborador. Si alguien la abre sin sesión, no se puede registrar. Tu propia visita no se cuenta.</p>
+   <button class="btn ghost" id="pback">Volver a la clase</button>`;
+  $('#pback',el).onclick=()=>showPanel(false);
+}
+function showPanel(on){
+  $('#panel').hidden=!on; $('#main').hidden=on; $('footer.nav').hidden=on;
+  $('#pb').textContent=on?'Cerrar panel':'Panel docente';
+  if(on)renderPanel(); else window.scrollTo(0,0);
+}
+async function trackInit(){
+  const C=window.claude; if(!C||typeof C.use!=='function')return;
+  let user=null; try{user=await C.use('user');}catch(e){}
+  let admin=false; try{admin=user?await user.canEdit():false;}catch(e){}
+  let db=null,room=null;
+  try{db=await C.use('db');}catch(e){}
+  try{room=await C.use('room');}catch(e){}
+  if(admin){
+    A.db=db; A.on=true; $('#pb').hidden=false;
+    $('#pb').onclick=()=>showPanel($('#panel').hidden);
+    if(db)db.collection('sessions').onSnapshot(s=>{A.rows={};s.docs.forEach(d=>{A.rows[d.id]=d.data()||{};});persistRoom();renderPanel();},()=>{});
+    if(room)room.onPeers(c=>{A.peers=c.peers;persistRoom();renderPanel();},()=>{});
+    return;
+  }
+  T.room=room;
+  if(db){let cw=null;try{cw=user?await user.can('data.write'):null;}catch(e){} if(cw!==false)T.doc=db.doc('sessions/'+T.sid);}
+  T.ready=true; trackPush();
+}
+
+/* ---------- contador externo (GoatCounter): solo cuenta, sin datos personales ---------- */
+const GCQ=[],GCSEEN=new Set();
+function gcReady(){return window.goatcounter&&typeof window.goatcounter.count==='function';}
+function gcSend(e){try{window.goatcounter.count({path:e[0],title:e[1],event:true});}catch(x){}}
+function gc(path,title){
+  if(GCSEEN.has(path))return; GCSEEN.add(path);
+  if(gcReady()){gcSend([path,title]);return;}
+  GCQ.push([path,title]);
+  if(!gc.t){let n=0;gc.t=setInterval(()=>{n++;
+    if(gcReady()){while(GCQ.length)gcSend(GCQ.shift());clearInterval(gc.t);gc.t=0;}
+    else if(n>40){clearInterval(gc.t);gc.t=0;GCQ.length=0;}},500);}
+}
+
+/* ---------- motor ---------- */
+const main=$('#main'), next=$('#next'), hint=$('#hint');
+function go(i){
+  S.i=i; const sc=scenes[i];
+  const api={hint:'',last:false,done(r){S.res[sc.id]=r;next.disabled=false;hint.textContent='';
+    if(sc.id==='pred'&&r&&r.id){track({pred:r.id});gc('pred-'+r.id,'Predicción: opción '+r.id.toUpperCase()+(r.ok?' (correcta)':''));}
+    if(sc.id==='fin'){track({done:true,pct:r.pct});gc('termino','Terminó la clase');}}};
+  track({s:i+1});
+  gc('e'+String(i+1).padStart(2,'0'),(i+1)+'. '+sc.label);
+  next.disabled=true; hint.textContent='';
+  main.innerHTML='<section class="scene"></section>';
+  const root=main.firstChild;
+  sc.render(root,api);
+  if(next.disabled) hint.textContent=api.hint||'Respondé para seguir';
+  next.textContent=i===scenes.length-1?'Terminar':(i===0?'Empezar':'Siguiente');
+  next.style.visibility=i===scenes.length-1?'hidden':'visible';
+  const pct=Math.round(i/(scenes.length-1)*100);
+  $('.bar i').style.width=Math.max(pct,4)+'%';
+  $('.bar').setAttribute('aria-valuenow',pct);
+  $('#metaL').textContent=sc.label; $('#metaR').textContent=(i+1)+' / '+scenes.length;
+  window.scrollTo(0,0); main.focus({preventScroll:true});
+}
+next.onclick=()=>{ if(S.i<scenes.length-1) go(S.i+1); };
+window.__go=go; window.__scenes=scenes.length;
+go(0);
+trackInit();
+})();
+</script>
+</body>
+</html>
